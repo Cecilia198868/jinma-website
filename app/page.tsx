@@ -587,30 +587,30 @@ export default function HomePage() {
     </p>
 
     <div className="mt-8 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-      {[
-[
-  { src: "/factory/factory-gate.jpg", alt: "Factory Gate" },
+{[
+  { src: "/factory/factory-gate-1.jpg", alt: "Factory Gate" },
+  { src: "/factory/factory-gate2.jpg", alt: "Factory Gate (2)" },
+
   { src: "/factory/factory-building-1.jpg", alt: "Factory Building" },
   { src: "/factory/factory-building-2.jpg", alt: "Factory Building" },
   { src: "/factory/factory-building-3.jpg", alt: "Factory Building" },
+  { src: "/factory/factory-building-4.jpg", alt: "Factory Building" },
+  { src: "/factory/factory-building-5.jpg", alt: "Factory Building" },
+
   { src: "/factory/factory-workshop-1.jpg", alt: "Production Line" },
   { src: "/factory/factory-workshop-2.jpg", alt: "Workshop" },
   { src: "/factory/factory-warehouse.jpg", alt: "Warehouse" },
-]
-      ].map((img, i) => (
-        <div
-          key={i}
-          className="overflow-hidden rounded-xl shadow-md"
-        >
-        <Image
-  src={img.src}
-  alt={img.alt}
-  width={600}
-  height={400}
-  className="h-64 w-full object-cover transition duration-300 hover:scale-105"
-/>
-        </div>
-      ))}
+].map((img, i) => (
+  <div key={i} className="overflow-hidden rounded-xl shadow-md">
+    <Image
+      src={img.src}
+      alt={img.alt}
+      width={600}
+      height={400}
+      className="h-64 w-full object-cover transition duration-300 hover:scale-105"
+    />
+  </div>
+))}
     </div>
   </div>
 </section>
