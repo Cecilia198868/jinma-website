@@ -271,6 +271,7 @@ function LogoMark({
   );
 }
 
+import Image from "next/image";
 export default function HomePage() {
   // “背景图”用法：SVG噪点 + 渐变光晕（不需要外部图片文件）
   const heroBg = {
@@ -528,7 +529,89 @@ export default function HomePage() {
           </div>
         </div>
       </section>
+      {/* ===== Patents & Utility Models ===== */}
+<section className="border-t border-white/10 bg-white/[0.02]">
+  <div className="mx-auto max-w-6xl px-5 py-16 md:py-20">
+    <SectionTitle
+      eyebrow="Patents"
+      title="Patents & Utility Models"
+      desc="Utility model patents supporting AGM separator manufacturing, drying, testing, and acid-liquid separation."
+    />
 
+    <div className="mt-10 grid gap-6 md:grid-cols-2">
+      {[
+        { title: "AGM Separator Drying Oven (Drying Box)", no: "ZL 2022 2 2520004.5" },
+        { title: "AGM Separator Acid-Liquid Separation Device", no: "ZL 2022 2 2631656.6" },
+        { title: "AGM Separator Flexural (Anti-Bending) Testing Equipment", no: "ZL 2022 2 2791889.2" },
+        { title: "Acid Absorption Testing Device for AGM Separator Processing", no: "ZL 2022 2 2965238.0" },
+        { title: "Slurry Drying & Forming Device for AGM Separators", no: "ZL 2022 2 3081315.2" },
+        { title: "Slice Inspection Device for AGM Separators", no: "ZL 2022 2 3221573.6" },
+        { title: "AGM Separator Drying Oven with Anti-Sticking Function", no: "ZL 2022 2 3449999.7" },
+        { title: "Pre-Press Mechanism for AGM Separator Processing", no: "ZL 2019 2 1397624.6" },
+        { title: "Limiting Mechanism for AGM Separator Slitting Machine", no: "ZL 2019 2 1426474.7" },
+        { title: "Spraying Device for AGM Separator Production", no: "ZL 2019 2 1443576.X" },
+        { title: "Adjustment Mechanism for AGM Separator Winding Device", no: "ZL 2019 2 1446660.7" },
+        { title: "Unloading Mechanism for AGM Separator Slicing Machine", no: "ZL 2019 2 1473259.2" },
+        { title: "Positioning Mechanism for AGM Separator Cutting Device", no: "ZL 2019 2 1473268.1" },
+        { title: "Winding Equipment for AGM Separator Production", no: "ZL 2019 2 1487020.0" },
+        { title: "AGM Separator Winding Device with Inspection Function", no: "ZL 2019 2 1489179.6" },
+      ].map((p) => (
+        <div
+          key={p.no}
+          className="rounded-2xl border border-white/10 bg-white/[0.03] p-6 shadow-[0_0_0_1px_rgba(255,255,255,0.03)_inset] backdrop-blur"
+        >
+          <div className="text-base md:text-lg font-semibold text-white">
+            {p.title}
+          </div>
+          <div className="mt-2 text-sm text-white/70">
+            <span className="text-white/60">Patent No:</span>{" "}
+            <span className="font-mono text-white/85">{p.no}</span>
+          </div>
+        </div>
+      ))}
+    </div>
+
+   <div className="mt-8 text-xs test-white/55">
+      * Patent details are presented as provided by the company.
+    </div>
+  </div>
+</section>
+{/* ===== End Patents ===== */}
+        {/* ===== Factory Photos ===== */}
+<section className="py-16">
+  <div className="mx-auto max-w-6xl px-6">
+    <h2 className="text-3xl font-bold">Factory Photos</h2>
+
+    <p className="mt-3 text-gray-600">
+      A glimpse of our facilities, production lines, and warehouse.
+    </p>
+
+    <div className="mt-8 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+      {[
+        { src: "/factory/publicfactorygate.jpg", alt: "Factory Gate" },
+        { src: "/factory/publicfactorybuilding 1.jpg", alt: "Factory Building" },
+        { src: "/factory/publicfactorybuilding 2.jpg", alt: "Factory Building" },
+        { src: "/factory/publicfactorybuilding 3.jpg", alt: "Factory Building" },
+        { src: "/factory/publicfactoryworkshop 1.jpg", alt: "Production Line" },
+        { src: "/factory/publicfactoryworkshop 2.jpg", alt: "Workshop" },
+        { src: "/factory/publicfactorywarehouse.jpg", alt: "Warehouse" },
+      ].map((img, i) => (
+        <div
+          key={i}
+          className="overflow-hidden rounded-xl shadow-md"
+        >
+        <Image
+  src={img.src}
+  alt={img.alt}
+  width={600}
+  height={400}
+  className="h-64 w-full object-cover transition duration-300 hover:scale-105"
+/>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
       {/* Applications */}
       <section id="applications" className="border-t border-white/10 bg-white/[0.02]">
         <div className="mx-auto max-w-6xl px-5 py-16 md:py-20">

@@ -22,7 +22,7 @@ export async function POST(req: Request) {
 
     if (!from || !pass) {
       return new Response(
-        JSON.stringify({ ok: false, error: "Email not configured" }),
+        JSON.stringify({ ok: false, error: "Email environment variables not configured" }),
         { status: 500 }
       );
     }
@@ -56,8 +56,9 @@ Time: ${new Date().toLocaleString()}
 
     return new Response(JSON.stringify({ ok: true }), { status: 200 });
   } catch (error: any) {
+    console.error("Email send error:", error);
     return new Response(
-      JSON.stringify({ ok: false, error: error.message }),
+      JSON.stringify({ ok: false, error: "Internal Server Error" }),
       { status: 500 }
     );
   }
