@@ -588,13 +588,15 @@ export default function HomePage() {
 
     <div className="mt-8 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
       {[
-        { src: "/factory/publicfactorygate.jpg", alt: "Factory Gate" },
-        { src: "/factory/publicfactorybuilding 1.jpg", alt: "Factory Building" },
-        { src: "/factory/publicfactorybuilding 2.jpg", alt: "Factory Building" },
-        { src: "/factory/publicfactorybuilding 3.jpg", alt: "Factory Building" },
-        { src: "/factory/publicfactoryworkshop 1.jpg", alt: "Production Line" },
-        { src: "/factory/publicfactoryworkshop 2.jpg", alt: "Workshop" },
-        { src: "/factory/publicfactorywarehouse.jpg", alt: "Warehouse" },
+[
+  { src: "/factory/factory-gate.jpg", alt: "Factory Gate" },
+  { src: "/factory/factory-building-1.jpg", alt: "Factory Building" },
+  { src: "/factory/factory-building-2.jpg", alt: "Factory Building" },
+  { src: "/factory/factory-building-3.jpg", alt: "Factory Building" },
+  { src: "/factory/factory-workshop-1.jpg", alt: "Production Line" },
+  { src: "/factory/factory-workshop-2.jpg", alt: "Workshop" },
+  { src: "/factory/factory-warehouse.jpg", alt: "Warehouse" },
+]
       ].map((img, i) => (
         <div
           key={i}
