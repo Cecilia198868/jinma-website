@@ -1,780 +1,567 @@
-// app/page.tsx
-import Link from "next/link";
+import { readdir } from "node:fs/promises";
+import path from "node:path";
 
-const COMPANY = {
-  name: "Jiangxi Jinma Separator Technology Co., Ltd.",
-  tagline: "Engineering stability for a connected energy world.",
-  subtag:
-    "High-performance AGM separator materials for reliable power systems across automotive, backup power, and industrial applications.",
-  founded: "Established 2004",
-  site: "47.6-acre site",
-  area: "30,000+ m² production space",
-  capacity: "Approx. 4,500 tons annual capacity",
-  location:
-    "No.105 Huajian North Road, Ganzhou Economic & Technological Development Zone, Ganzhou, Jiangxi, China",
-};
-
-const CERTS = [
-  { title: "ISO 9001:2015", desc: "Quality management system (AGM separator production)" },
-  { title: "ISO 14001:2015", desc: "Environmental management system" },
-  { title: "ISO 45001:2018", desc: "Occupational health & safety management system" },
+const HERO_HIGHLIGHTS = [
+  "Established in 2004",
+  "Annual Capacity: 4,500 tons",
+  "Factory Area: 30,000+ m²",
+  "Product Qualification Rate: 98%+",
 ];
 
-const CERTIFICATES = [
+const PRODUCT_CARDS = [
+  "AGM separators for VRLA batteries",
+  "AGM separators for start-stop battery systems",
+  "Customized separator materials for lead-acid battery manufacturers",
+];
+
+const CAPABILITIES = [
+  "Industrial-scale AGM separator production",
+  "Annual production capacity of approximately 4,500 tons",
+  "Digital production control",
+  "Process optimization",
+  "Stable quality management",
+  "Product qualification rate above 98%",
+  "Premium product rate above 95%",
+];
+
+const CERTIFICATIONS = [
   {
-    type: "Quality Management System",
-    standard: "ISO 9001:2015",
-    certNo: "USA24Q40542R0S",
+    title: "ISO 9001:2015 Quality Management System",
+    number: "USA24Q40542R0S",
     scope: "Production of AGM separators",
-    issueDate: "2024-02-19",
     validUntil: "2027-02-18",
-    issuer: "Beijing Oriental Horizon Certification Center Co., Ltd.",
   },
   {
-    type: "Occupational Health & Safety Management System",
-    standard: "ISO 45001:2018",
-    certNo: "USA24S20544R0S",
-    scope:
-      "Production of AGM separators and related OH&S management activities at involved sites",
-    issueDate: "2024-02-19",
+    title: "ISO 14001:2015 Environmental Management System",
+    number: "USA24E40543R0S",
+    scope: "AGM separator production and related environmental management activities",
     validUntil: "2027-02-18",
-    issuer: "Beijing Oriental Horizon Certification Center Co., Ltd.",
   },
   {
-    type: "Environmental Management System",
-    standard: "ISO 14001:2015",
-    certNo: "USA24E40543R0S",
-    scope: "Production of AGM separators and related environmental management activities",
-    issueDate: "2024-02-19",
+    title: "ISO 45001:2018 Occupational Health & Safety Management System",
+    number: "USA24S20544R0S",
+    scope: "AGM separator production and related occupational health and safety activities",
     validUntil: "2027-02-18",
-    issuer: "Beijing Oriental Horizon Certification Center Co., Ltd.",
   },
   {
-    type: "National High-Tech Enterprise",
-    standard: "High-Tech Enterprise Certificate",
-    certNo: "GR202036000316",
-    scope: "Issued by provincial authorities (as provided)",
-    issueDate: "2020-09-14",
-    validUntil: "Valid for 3 years",
-    issuer:
-      "Jiangxi Provincial Department of Science & Technology / Finance Dept. / State Taxation Administration (Jiangxi)",
+    title: "High-Tech Enterprise Certificate 2020",
+    number: "GR202036000316",
   },
   {
-    type: "National High-Tech Enterprise",
-    standard: "High-Tech Enterprise Certificate",
-    certNo: "GR202436001705",
-    scope: "Issued by provincial authorities (as provided)",
-    issueDate: "2024-11-26",
-    validUntil: "Valid for 3 years",
-    issuer:
-      "Jiangxi Provincial Department of Science & Technology / Finance Dept. / State Taxation Administration (Jiangxi)",
+    title: "High-Tech Enterprise Certificate 2024",
+    number: "GR202436001705",
   },
 ];
 
 const AWARDS = [
   {
-    title: "Jiangxi “Specialized & Innovative” SME",
-    org: "Jiangxi Provincial Department of Industry and Information Technology",
-    date: "2021 (recognized; certificate issued Mar 2022)",
-    note: "Validity: 3 years (as provided)",
+    title: "2026 Global Recognition Award Winner",
+    image: "/awards/global-recognition-award-2026.png",
+    body: "Lin Liang received the 2026 Global Recognition Award for exceptional contributions to AGM separator technology, industrial innovation, and advanced energy storage materials engineering.",
+    extra:
+      "The award recognized Lin Liang’s ability to bridge laboratory research and scalable industrial manufacturing, delivering measurable improvements in battery safety, lifecycle performance, thermal stability, and electrolyte management.",
   },
   {
-    title: "Jiangxi “Specialized & Innovative” SME",
-    org: "Jiangxi Provincial Department of Industry and Information Technology",
-    date: "2024-08",
-    note: "Validity: 2024-08 to 2027-08 (as provided)",
+    title: "Industry Eagles Awards 2026 Finalist",
+    image: "/awards/Business Change and Transformation Excellence.png",
+    body: "Jiangxi Jinma Advanced Separator Technology Co., Ltd. was selected as a finalist in the 2026 Industry Eagles Awards for innovation and manufacturing excellence in AGM battery separator technology.",
   },
   {
-    title: "Excellence Quality Award",
-    org: "LEOCH Battery (Leoch International Technology Co., Ltd.)",
-    date: "2023-06",
-    note: "Quality excellence recognition (as provided)",
+    title: "Technology Innovation of the Year – Finalist",
+    image: "/awards/Technology Innovation of the Year-finalist-2026.png",
+    body: "Finalist recognition for Advanced AGM Separator Technology for High-Reliability Lead-Acid Batteries.",
   },
   {
-    title: "Excellent Supplier",
-    org: "KAMISAFE (Shenzhen Kangmingsheng Industrial Co., Ltd.)",
-    date: "2013 (Awarded in 2014-02)",
-    note: "Supplier recognition (as provided)",
+    title: "Business Change and Transformation Excellence – Finalist",
+    image: "/awards/Business Change and Transformation Excellence-finalist-2026.png",
+    body: "Finalist recognition for business change, transformation, and industrial innovation.",
   },
   {
-    title: "Excellent Supplier",
-    org: "LEOCH Battery",
-    date: "Year not specified",
-    note: "Supplier recognition (as provided)",
+    title: "Best New Product/Service Launch – Finalist",
+    image: "/awards/Best New ProductService Launch-finalist-2026.png",
+    body: "Finalist recognition for Jinma Advanced AGM Battery Separator for High-Performance Lead-Acid Batteries.",
+  },
+  {
+    title: "Jiangxi Specialized and Innovative SME Recognition 2021",
+    body: "Recognized by Jiangxi Provincial Department of Industry and Information Technology.",
+  },
+  {
+    title: "Jiangxi Specialized and Innovative SME Recognition 2024",
+    body: "Recognized as a 2024 Jiangxi Specialized and Innovative SME, valid from August 2024 to August 2027.",
+  },
+  {
+    title: "Leoch Excellence Quality Award 2023",
+    body: "Awarded by Leoch International Technology Co., Ltd. for quality excellence.",
+  },
+  {
+    title: "Excellent Supplier Award – KAMISAFE",
+    body: "Supplier recognition awarded by Shenzhen Kangming Sheng Industrial Co., Ltd.",
+  },
+  {
+    title: "Excellent Supplier Award – Leoch Battery",
+    body: "Supplier recognition awarded by Leoch Battery.",
   },
 ];
 
-const HIGHLIGHTS = [
-  { k: "Founded", v: "2004" },
-  { k: "Capacity", v: "4,500 t/y" },
-  { k: "Site", v: "47.6 acres" },
-  { k: "Facility", v: "30,000+ m²" },
+const PATENTS = [
+  "AGM separator drying box",
+  "AGM separator acid separation device",
+  "AGM separator bending resistance testing equipment",
+  "AGM separator acid absorption testing device",
+  "AGM separator slurry drying and forming device",
+  "AGM separator cutting inspection device",
+  "Anti-adhesion AGM separator drying box",
+  "AGM separator pre-pressing mechanism",
+  "AGM separator slitting machine limiting mechanism",
+  "AGM separator spraying device",
+  "AGM separator winding adjustment mechanism",
+  "AGM separator slicing machine unloading mechanism",
+  "AGM separator cutting positioning mechanism",
+  "AGM separator winding equipment",
+  "AGM separator winding device with inspection function",
 ];
 
-const APPLICATIONS = [
-  {
-    title: "Automotive Start-Stop",
-    desc: "Stable internal structure support for high-cycle operation.",
-  },
-  {
-    title: "UPS & Data Centers",
-    desc: "Designed for continuity, reliability, and predictable performance.",
-  },
-  {
-    title: "Telecom Backup Power",
-    desc: "Consistency for long-duration standby and infrastructure resilience.",
-  },
-  {
-    title: "Industrial Standby",
-    desc: "Cost-effective solutions for demanding operating conditions.",
-  },
-];
+const IMAGE_EXTENSIONS = new Set([".jpg", ".jpeg", ".png", ".webp", ".gif", ".avif"]);
 
-const CAPABILITIES = [
-  {
-    title: "AGM Separator Specialization",
-    desc: "Focused manufacturing and process expertise within the lead-acid battery supply chain.",
-  },
-  {
-    title: "Digitally Controlled Production",
-    desc: "Process control designed to improve batch-to-batch consistency and stability.",
-  },
-  {
-    title: "Custom Dimensions",
-    desc: "Thickness range 0.50–5.0 mm; length/width tailored to client requirements.",
-  },
-  {
-    title: "Quality-First, Service-First",
-    desc: "End-to-end quality control from raw materials through production and delivery support.",
-  },
-];
+type GalleryImage = {
+  src: string;
+  alt: string;
+  name: string;
+};
 
-const RECOGNITIONS = [
-  {
-    title: "National High-Tech Enterprise",
-    desc: "Recognized in 2020 and 2024 cycles (as provided).",
-  },
-  {
-    title: "Jiangxi “Specialized & Innovative” SME",
-    desc: "Recognized in 2021 and 2024 cycles (as provided).",
-  },
-  {
-    title: "Supplier Recognition",
-    desc: "Industry acknowledgments including quality awards (as provided).",
-  },
-];
+async function getGalleryImages(
+  folders: { publicPath: string; diskPath: string }[],
+  fallbackAlt: string
+): Promise<GalleryImage[]> {
+  for (const folder of folders) {
+    try {
+      const absolutePath = path.join(process.cwd(), "public", folder.diskPath);
+      const entries = await readdir(absolutePath, { withFileTypes: true });
+      const images = entries
+        .filter((entry) => entry.isFile())
+        .filter((entry) => IMAGE_EXTENSIONS.has(path.extname(entry.name).toLowerCase()))
+        .sort((a, b) => a.name.localeCompare(b.name))
+        .map((entry) => ({
+          src: `${folder.publicPath}/${entry.name}`,
+          alt: `${fallbackAlt} - ${entry.name}`,
+          name: entry.name,
+        }));
 
-const PATENT_AREAS = [
-  "Drying & forming systems",
-  "Acid separation devices",
-  "Mechanical testing equipment",
-  "Precision slitting, winding & handling",
-  "Process optimization mechanisms",
-];
+      if (images.length > 0) {
+        return images;
+      }
+    } catch {
+      continue;
+    }
+  }
 
-function SectionTitle({
-  eyebrow,
+  return [];
+}
+
+function GallerySection({
+  id,
   title,
-  desc,
+  subtitle,
+  images,
 }: {
-  eyebrow?: string;
+  id: string;
   title: string;
-  desc?: string;
+  subtitle: string;
+  images: GalleryImage[];
 }) {
   return (
-    <div className="mx-auto max-w-3xl text-center">
-      {eyebrow ? (
-        <div className="text-xs tracking-[0.24em] uppercase text-white/60">{eyebrow}</div>
-      ) : null}
-      <h2 className="mt-3 text-3xl md:text-4xl font-semibold text-white">{title}</h2>
-      {desc ? <p className="mt-3 text-base md:text-lg text-white/70">{desc}</p> : null}
-    </div>
-  );
-}
-
-function Card({
-  title,
-  desc,
-}: {
-  title: string;
-  desc: string;
-}) {
-  return (
-    <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-6 shadow-[0_0_0_1px_rgba(255,255,255,0.03)_inset] backdrop-blur">
-      <div className="text-lg font-semibold text-white">{title}</div>
-      <div className="mt-2 text-sm leading-relaxed text-white/70">{desc}</div>
-    </div>
-  );
-}
-
-function LogoMark({
-  brand = "KINGMA",
-  sub = "VAGEN",
-}: {
-  brand?: string;
-  sub?: string;
-}) {
-  return (
-    <div className="flex items-center gap-3">
-      {/* SVG mark */}
-      <div className="h-10 w-10 rounded-2xl border border-white/10 bg-white/[0.03] shadow-[0_0_0_1px_rgba(255,255,255,0.03)_inset] backdrop-blur flex items-center justify-center">
-        <svg
-          width="26"
-          height="26"
-          viewBox="0 0 26 26"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-          aria-label="Logo"
-        >
-          {/* outer ring */}
-          <path
-            d="M13 2.7c5.68 0 10.3 4.62 10.3 10.3S18.68 23.3 13 23.3 2.7 18.68 2.7 13 7.32 2.7 13 2.7Z"
-            stroke="rgba(255,255,255,0.55)"
-            strokeWidth="1.1"
-          />
-          {/* energy arc */}
-          <path
-            d="M6.2 14.2c1.3 3.6 4.8 6.1 8.8 6.1 3.4 0 6.4-1.8 8-4.6"
-            stroke="rgba(56,189,248,0.85)"
-            strokeWidth="1.6"
-            strokeLinecap="round"
-          />
-          {/* fiber / layers */}
-          <path
-            d="M6.8 11.3h12.4"
-            stroke="rgba(255,255,255,0.45)"
-            strokeWidth="1.2"
-            strokeLinecap="round"
-          />
-          <path
-            d="M7.8 8.7h10.4"
-            stroke="rgba(34,197,94,0.75)"
-            strokeWidth="1.2"
-            strokeLinecap="round"
-            opacity="0.85"
-          />
-          {/* core dot */}
-          <circle cx="13" cy="13" r="1.55" fill="rgba(255,255,255,0.85)" />
-        </svg>
-      </div>
-
-      {/* Wordmark */}
-      <div className="leading-tight">
-        <div className="text-sm font-semibold tracking-wide text-white">
-          {brand}
+    <section id={id} className="content-section gallery-section">
+      <div className="section-inner">
+        <div className="section-heading">
+          <p className="section-kicker">{title}</p>
+          <h2>{title}</h2>
+          <p>{subtitle}</p>
         </div>
-        <div className="text-[11px] tracking-[0.22em] uppercase text-white/55">
-          {sub}
-        </div>
-      </div>
-    </div>
-  );
-}
-
-import Image from "next/image";
-export default function HomePage() {
-  // “背景图”用法：SVG噪点 + 渐变光晕（不需要外部图片文件）
-  const heroBg = {
-    backgroundImage: `
-      radial-gradient(1200px 600px at 15% 10%, rgba(56,189,248,0.25), transparent 60%),
-      radial-gradient(900px 500px at 85% 20%, rgba(34,197,94,0.18), transparent 55%),
-      radial-gradient(900px 600px at 55% 80%, rgba(99,102,241,0.20), transparent 60%),
-      linear-gradient(180deg, rgba(2,6,23,0.92), rgba(2,6,23,0.88)),
-      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='220' height='220' filter='url(%23n)' opacity='.18'/%3E%3C/svg%3E")
-    `,
-    backgroundSize: "cover",
-    backgroundPosition: "center",
-  } as const;
-
-  return (
-    <div className="min-h-screen bg-slate-950 text-white">
-      {/* Top bar */}
-      <header className="sticky top-0 z-50 border-b border-white/10 bg-slate-950/70 backdrop-blur">
-        <div className="mx-auto flex max-w-6xl items-center justify-between px-5 py-4">
-          <div className="flex items-center gap-4">
-            <LogoMark brand="KINGMA" sub="VAGEN" />
-            <div className="hidden lg:block leading-tight">
-            <div className="text-xs text-white/55">{COMPANY.name}</div>
-            <div className="text-xs text-white/45">AGM Separator Materials</div>
+        {images.length > 0 ? (
+          <div className="gallery-grid">
+            {images.map((image) => (
+              <figure key={`${id}-${image.name}`} className="gallery-card">
+                <div className="gallery-media">
+                  <img src={image.src} alt={image.alt} loading="lazy" />
+                </div>
+              </figure>
+            ))}
           </div>
-        </div>
+        ) : (
+          <div className="gallery-empty">
+            <p>
+              This gallery is ready. Add images to the linked folder and they will appear
+              here automatically.
+            </p>
+          </div>
+        )}
+      </div>
+    </section>
+  );
+}
 
-          <nav className="hidden md:flex items-center gap-7 text-sm text-white/70">
-            <a href="#about" className="hover:text-white">About</a>
-            <a href="#applications" className="hover:text-white">Applications</a>
-            <a href="#capabilities" className="hover:text-white">Capabilities</a>
-            <a href="#quality" className="hover:text-white">Quality</a>
-            <a href="#contact" className="hover:text-white">Contact</a>
+export default async function Home() {
+  const [factoryImages, productImages, certificateImages, patentImages] =
+    await Promise.all([
+      getGalleryImages(
+        [{ publicPath: "/factory", diskPath: "factory" }],
+        "Factory gallery image"
+      ),
+      getGalleryImages(
+        [{ publicPath: "/products", diskPath: "products" }],
+        "Product gallery image"
+      ),
+      getGalleryImages(
+        [
+          { publicPath: "/certificates", diskPath: "certificates" },
+          { publicPath: "/certificate", diskPath: "certificate" },
+        ],
+        "Certification gallery image"
+      ),
+      getGalleryImages(
+        [
+          { publicPath: "/patents", diskPath: "patents" },
+          { publicPath: "/patent", diskPath: "patent" },
+        ],
+        "Patent gallery image"
+      ),
+    ]);
+
+  return (
+    <main className="site-shell">
+      <header className="site-header">
+        <div className="section-inner header-inner">
+          <a href="#top" className="brand-block" aria-label="KINGMA VAGEN home">
+            <span className="brand-mark">KINGMA VAGEN</span>
+            <span className="brand-subtitle">
+              Jiangxi Jinma Advanced Separator Technology Co., Ltd.
+            </span>
+            <span className="brand-subtitle">AGM Separator Materials</span>
+          </a>
+
+          <nav className="site-nav" aria-label="Primary">
+            <a href="#about">About</a>
+            <a href="#products">Products</a>
+            <a href="#capabilities">Capabilities</a>
+            <a href="#quality">Quality</a>
+            <a href="#awards">Awards</a>
+            <a href="#patents">Patents</a>
+            <a href="#contact">Contact</a>
           </nav>
-          <Link
-            href="#contact"
-            className="rounded-xl bg-white text-slate-950 px-4 py-2 text-sm font-semibold hover:bg-white/90"
-          >
-            Request a Quote
-          </Link>
         </div>
       </header>
 
-      {/* Hero */}
-      <section style={heroBg} className="relative overflow-hidden">
-        <div className="mx-auto max-w-6xl px-5 py-20 md:py-28">
-          <div className="max-w-3xl">
-            <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-4 py-2 text-xs text-white/70">
-              <span className="h-2 w-2 rounded-full bg-emerald-400/80" />
-              {COMPANY.founded} · National High-Tech Enterprise · ISO Certified
-            </div>
-
-            <h1 className="mt-6 text-4xl md:text-6xl font-semibold tracking-tight">
-              {COMPANY.tagline}
+      <section id="top" className="hero-section">
+        <div className="section-inner hero-grid">
+          <div className="hero-copy">
+            <p className="section-kicker">Advanced AGM Separator Manufacturing</p>
+            <h1>
+              Advanced AGM Separator Materials for Reliable Lead-Acid Energy Storage
             </h1>
-
-            <p className="mt-5 text-base md:text-lg text-white/70 leading-relaxed">
-              {COMPANY.subtag}
+            <p className="hero-text">
+              Jiangxi Jinma Advanced Separator Technology Co., Ltd. specializes in AGM
+              battery separator manufacturing, process optimization, and quality-controlled
+              industrial production for VRLA and lead-acid battery applications.
             </p>
-
-            <div className="mt-8 flex flex-col sm:flex-row gap-3">
-              <a
-                href="#capabilities"
-                className="rounded-2xl bg-white px-6 py-3 text-sm font-semibold text-slate-950 hover:bg-white/90"
-              >
-                Explore Technology
+            <div className="hero-actions">
+              <a className="button-primary" href="#contact">
+                Contact Jinma
               </a>
-              <a
-                href="#about"
-                className="rounded-2xl border border-white/15 bg-white/[0.03] px-6 py-3 text-sm font-semibold text-white hover:bg-white/[0.06]"
-              >
-                Company Overview
+              <a className="button-secondary" href="#products">
+                View Products
               </a>
             </div>
+          </div>
 
-            <div className="mt-10 grid grid-cols-2 sm:grid-cols-4 gap-4">
-              {HIGHLIGHTS.map((x) => (
-                <div
-                  key={x.k}
-                  className="rounded-2xl border border-white/10 bg-white/[0.03] p-4 backdrop-blur"
-                >
-                  <div className="text-xs text-white/60">{x.k}</div>
-                  <div className="mt-1 text-lg font-semibold">{x.v}</div>
-                </div>
+          <div className="hero-panel">
+            <ul className="hero-highlights">
+              {HERO_HIGHLIGHTS.map((item) => (
+                <li key={item}>{item}</li>
               ))}
-            </div>
-
-            {/* Certificates & Awards (luxury-style) */}
-<div className="mt-12 rounded-3xl border border-white/10 bg-white/[0.03] p-7 md:p-8 backdrop-blur">
-  <div className="flex flex-col gap-2 md:flex-row md:items-end md:justify-between">
-    <div>
-      <div className="text-xs tracking-[0.24em] uppercase text-white/60">
-        Certificates & Awards
-      </div>
-      <div className="mt-2 text-2xl md:text-3xl font-semibold text-white">
-        Proof of disciplined standards
-      </div>
-      <div className="mt-2 text-sm text-white/70">
-        International management systems, government recognitions, and customer awards.
-      </div>
-    </div>
-    <div className="text-xs text-white/55">
-      * Details are presented as provided by the company.
-    </div>
-  </div>
-
-  <div className="mt-8 grid gap-6 lg:grid-cols-2">
-    {/* Left: Certificates */}
-    <div className="rounded-2xl border border-white/10 bg-slate-950/40 p-6">
-      <div className="flex items-center justify-between">
-        <div className="text-sm font-semibold text-white">Certificates</div>
-        <div className="text-xs text-white/55">ISO · Compliance · High-Tech</div>
-      </div>
-
-      <div className="mt-5 space-y-4">
-        {CERTIFICATES.map((c) => (
-          <div
-            key={c.certNo}
-            className="rounded-2xl border border-white/10 bg-white/[0.03] p-5"
-          >
-            <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
+            </ul>
+            <div className="hero-facts">
               <div>
-                <div className="text-xs tracking-[0.22em] uppercase text-white/55">
-                  {c.type}
-                </div>
-                <div className="mt-1 text-lg font-semibold text-white">
-                  {c.standard}
-                </div>
+                <span>Location</span>
+                <strong>Ganzhou Economic and Technological Development Zone, Jiangxi, China</strong>
               </div>
-
-              <div className="rounded-xl border border-white/10 bg-white/[0.02] px-3 py-2">
-                <div className="text-[10px] tracking-[0.22em] uppercase text-white/45">
-                  Certificate No.
-                </div>
-                <div className="mt-1 font-mono text-xs text-white/85">
-                  {c.certNo}
-                </div>
-              </div>
-            </div>
-
-            <div className="mt-4 grid gap-3 sm:grid-cols-2">
-              <div className="rounded-xl border border-white/10 bg-slate-950/40 p-3">
-                <div className="text-[10px] tracking-[0.22em] uppercase text-white/45">
-                  Scope
-                </div>
-                <div className="mt-1 text-xs text-white/75">{c.scope}</div>
-              </div>
-              <div className="rounded-xl border border-white/10 bg-slate-950/40 p-3">
-                <div className="text-[10px] tracking-[0.22em] uppercase text-white/45">
-                  Dates
-                </div>
-                <div className="mt-1 text-xs text-white/75">
-                  Issued: <span className="font-mono">{c.issueDate}</span>
-                  <br />
-                  Valid: <span className="font-mono">{c.validUntil}</span>
-                </div>
-              </div>
-            </div>
-
-            <div className="mt-4 text-xs text-white/60">
-              Issuer: {c.issuer}
-            </div>
-          </div>
-        ))}
-      </div>
-    </div>
-
-    {/* Right: Awards */}
-    <div className="rounded-2xl border border-white/10 bg-slate-950/40 p-6">
-      <div className="flex items-center justify-between">
-        <div className="text-sm font-semibold text-white">Awards & Recognitions</div>
-        <div className="text-xs text-white/55">Government · Customers · Industry</div>
-      </div>
-
-      <div className="mt-5 space-y-4">
-        {AWARDS.map((a) => (
-          <div
-            key={`${a.title}-${a.date}`}
-            className="rounded-2xl border border-white/10 bg-white/[0.03] p-5"
-          >
-            <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
               <div>
-                <div className="text-lg font-semibold text-white">{a.title}</div>
-                <div className="mt-1 text-sm text-white/70">{a.org}</div>
+                <span>Main Product</span>
+                <strong>AGM battery separators</strong>
               </div>
-              <div className="rounded-xl border border-white/10 bg-white/[0.02] px-3 py-2">
-                <div className="text-[10px] tracking-[0.22em] uppercase text-white/45">
-                  Date
-                </div>
-                <div className="mt-1 font-mono text-xs text-white/85">{a.date}</div>
+              <div>
+                <span>Markets</span>
+                <strong>China, Indonesia, Bangladesh, Vietnam, and other international markets</strong>
               </div>
             </div>
-
-            {a.note ? (
-              <div className="mt-3 text-xs text-white/60">{a.note}</div>
-            ) : null}
-          </div>
-        ))}
-
-        <div className="rounded-2xl border border-white/10 bg-white/[0.02] p-5">
-          <div className="text-xs tracking-[0.22em] uppercase text-white/55">
-            Patents (Summary)
-          </div>
-          <div className="mt-2 text-sm text-white/70">
-            Multiple utility model patents covering drying, acid separation, testing,
-            slitting, winding, and process optimization mechanisms.
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-
-            <div className="mt-8 text-xs text-white/55">
-              Headquartered in Ganzhou, Jiangxi · Serving domestic leaders and selected export markets
-            </div>
-          </div>
-        </div>
-
-        {/* Decorative energy line */}
-        <div className="pointer-events-none absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-white/30 to-transparent" />
-      </section>
-
-      {/* About */}
-      <section id="about" className="mx-auto max-w-6xl px-5 py-16 md:py-20">
-        <SectionTitle
-          eyebrow="Company"
-          title="Materials behind reliable power"
-          desc="A focused AGM separator manufacturer supporting power reliability across critical infrastructure."
-        />
-
-        <div className="mt-10 grid gap-6 md:grid-cols-2">
-          <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-7 backdrop-blur">
-            <div className="text-lg font-semibold">Who we are</div>
-            <p className="mt-3 text-sm leading-relaxed text-white/70">
-              {COMPANY.name} specializes in AGM separator materials. Operating in the National
-              Economic & Technological Development Zone of Ganzhou, we run digitally controlled
-              production lines designed for stable, repeatable performance.
-            </p>
-            <p className="mt-3 text-sm leading-relaxed text-white/70">
-              Our manufacturing footprint covers {COMPANY.site} with {COMPANY.area}, delivering
-              approximately {COMPANY.capacity}.
-            </p>
-          </div>
-
-          <div className="grid gap-6">
-            <Card
-              title="Strategic Location"
-              desc="Located in a major transport hub within a national-level development zone to support efficient supply and delivery."
-            />
-            <Card
-              title="Specialization Model"
-              desc="A professionalized approach focused on product, service, equipment, and market specialization for AGM separator manufacturing."
-            />
           </div>
         </div>
       </section>
-      {/* ===== Patents & Utility Models ===== */}
-<section className="border-t border-white/10 bg-white/[0.02]">
-  <div className="mx-auto max-w-6xl px-5 py-16 md:py-20">
-    <SectionTitle
-      eyebrow="Patents"
-      title="Patents & Utility Models"
-      desc="Utility model patents supporting AGM separator manufacturing, drying, testing, and acid-liquid separation."
-    />
 
-    <div className="mt-10 grid gap-6 md:grid-cols-2">
-      {[
-        { title: "AGM Separator Drying Oven (Drying Box)", no: "ZL 2022 2 2520004.5" },
-        { title: "AGM Separator Acid-Liquid Separation Device", no: "ZL 2022 2 2631656.6" },
-        { title: "AGM Separator Flexural (Anti-Bending) Testing Equipment", no: "ZL 2022 2 2791889.2" },
-        { title: "Acid Absorption Testing Device for AGM Separator Processing", no: "ZL 2022 2 2965238.0" },
-        { title: "Slurry Drying & Forming Device for AGM Separators", no: "ZL 2022 2 3081315.2" },
-        { title: "Slice Inspection Device for AGM Separators", no: "ZL 2022 2 3221573.6" },
-        { title: "AGM Separator Drying Oven with Anti-Sticking Function", no: "ZL 2022 2 3449999.7" },
-        { title: "Pre-Press Mechanism for AGM Separator Processing", no: "ZL 2019 2 1397624.6" },
-        { title: "Limiting Mechanism for AGM Separator Slitting Machine", no: "ZL 2019 2 1426474.7" },
-        { title: "Spraying Device for AGM Separator Production", no: "ZL 2019 2 1443576.X" },
-        { title: "Adjustment Mechanism for AGM Separator Winding Device", no: "ZL 2019 2 1446660.7" },
-        { title: "Unloading Mechanism for AGM Separator Slicing Machine", no: "ZL 2019 2 1473259.2" },
-        { title: "Positioning Mechanism for AGM Separator Cutting Device", no: "ZL 2019 2 1473268.1" },
-        { title: "Winding Equipment for AGM Separator Production", no: "ZL 2019 2 1487020.0" },
-        { title: "AGM Separator Winding Device with Inspection Function", no: "ZL 2019 2 1489179.6" },
-      ].map((p) => (
-        <div
-          key={p.no}
-          className="rounded-2xl border border-white/10 bg-white/[0.03] p-6 shadow-[0_0_0_1px_rgba(255,255,255,0.03)_inset] backdrop-blur"
-        >
-          <div className="text-base md:text-lg font-semibold text-white">
-            {p.title}
+      <section id="about" className="content-section">
+        <div className="section-inner">
+          <div className="section-heading">
+            <p className="section-kicker">About Us</p>
+            <h2>Specialized AGM separator manufacturing with industrial discipline</h2>
           </div>
-          <div className="mt-2 text-sm text-white/70">
-            <span className="text-white/60">Patent No:</span>{" "}
-            <span className="font-mono text-white/85">{p.no}</span>
+          <div className="two-column-layout">
+            <div className="content-card">
+              <p>
+                Jiangxi Jinma Advanced Separator Technology Co., Ltd. is a specialized
+                manufacturer of absorbent glass mat (AGM) battery separators located in
+                Ganzhou Economic and Technological Development Zone, Jiangxi, China. The
+                company focuses on AGM separator materials, battery separator production,
+                process control, and industrial-scale quality management.
+              </p>
+              <p>
+                The company operates advanced production lines with digital control
+                systems and maintains strict quality standards. Its AGM separator products
+                serve domestic lead-acid battery manufacturers and international markets
+                including Indonesia, Bangladesh, and Vietnam.
+              </p>
+            </div>
+            <div className="stat-grid">
+              <div className="stat-card">
+                <span>Established</span>
+                <strong>2004</strong>
+              </div>
+              <div className="stat-card">
+                <span>Factory</span>
+                <strong>47.6 mu / 30,000+ m²</strong>
+              </div>
+              <div className="stat-card">
+                <span>Annual Capacity</span>
+                <strong>Approx. 4,500 tons</strong>
+              </div>
+              <div className="stat-card">
+                <span>Employees</span>
+                <strong>About 50–70</strong>
+              </div>
+            </div>
           </div>
         </div>
-      ))}
-    </div>
+      </section>
 
-   <div className="mt-8 text-xs test-white/55">
-      * Patent details are presented as provided by the company.
-    </div>
-  </div>
-</section>
-{/* ===== End Patents ===== */}
-        {/* ===== Factory Photos ===== */}
-<section className="py-16">
-  <div className="mx-auto max-w-6xl px-6">
-    <h2 className="text-3xl font-bold">Factory Photos</h2>
-
-    <p className="mt-3 text-gray-600">
-      A glimpse of our facilities, production lines, and warehouse.
-    </p>
-
-    <div className="mt-8 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-{[
-  { src: "/factory/factory-gate-1.jpg", alt: "Factory Gate" },
-  { src: "/factory/factory-gate2.jpg", alt: "Factory Gate (2)" },
-
-  { src: "/factory/factory-building-1.jpg", alt: "Factory Building" },
-  { src: "/factory/factory-building-2.jpg", alt: "Factory Building" },
-  { src: "/factory/factory-building-3.jpg", alt: "Factory Building" },
-  { src: "/factory/factory-building-4.jpg", alt: "Factory Building" },
-  { src: "/factory/factory-building-5.jpg", alt: "Factory Building" },
-
-  { src: "/factory/factory-workshop-1.jpg", alt: "Production Line" },
-  { src: "/factory/factory-workshop-2.jpg", alt: "Workshop" },
-  { src: "/factory/factory-warehouse.jpg", alt: "Warehouse" },
-].map((img, i) => (
-  <div key={i} className="overflow-hidden rounded-xl shadow-md">
-    <Image
-      src={img.src}
-      alt={img.alt}
-      width={600}
-      height={400}
-      className="h-64 w-full object-cover transition duration-300 hover:scale-105"
-    />
-  </div>
-))}
-    </div>
-  </div>
-</section>
-      {/* Applications */}
-      <section id="applications" className="border-t border-white/10 bg-white/[0.02]">
-        <div className="mx-auto max-w-6xl px-5 py-16 md:py-20">
-          <SectionTitle
-            eyebrow="Energy Applications"
-            title="Powering critical infrastructure"
-            desc="Designed for systems where reliability is non-negotiable."
-          />
-
-          <div className="mt-10 grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-            {APPLICATIONS.map((a) => (
-              <Card key={a.title} title={a.title} desc={a.desc} />
+      <section id="products" className="content-section section-toned">
+        <div className="section-inner">
+          <div className="section-heading">
+            <p className="section-kicker">AGM Separator Products</p>
+            <h2>Separator materials engineered for VRLA and lead-acid battery systems</h2>
+            <p>
+              The company manufactures AGM separators for VRLA and lead-acid battery
+              applications. Products are available in thicknesses from 0.50 mm to 5.0 mm,
+              with customized length and width according to customer requirements.
+            </p>
+          </div>
+          <div className="three-column-grid">
+            {PRODUCT_CARDS.map((item) => (
+              <article key={item} className="feature-card">
+                <h3>{item}</h3>
+                <p>
+                  Industrial product development focused on consistency, fit-for-use
+                  performance, and customer-specific dimensional requirements.
+                </p>
+              </article>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Capabilities */}
-      <section id="capabilities" className="mx-auto max-w-6xl px-5 py-16 md:py-20">
-        <SectionTitle
-          eyebrow="Capabilities"
-          title="Precision manufacturing, engineered consistency"
-          desc="From specialized production lines to custom specifications—built for stable performance at scale."
-        />
-
-        <div className="mt-10 grid gap-6 md:grid-cols-2">
-          {CAPABILITIES.map((c) => (
-            <Card key={c.title} title={c.title} desc={c.desc} />
-          ))}
-        </div>
-
-        <div className="mt-10 rounded-2xl border border-white/10 bg-white/[0.03] p-7 backdrop-blur">
-          <div className="text-lg font-semibold">Product specification</div>
-          <div className="mt-3 grid gap-4 sm:grid-cols-2">
-            <div className="rounded-xl border border-white/10 bg-white/[0.03] p-4">
-              <div className="text-xs text-white/60">Thickness range</div>
-              <div className="mt-1 text-base font-semibold">0.50 mm – 5.0 mm</div>
+      <section id="capabilities" className="content-section">
+        <div className="section-inner">
+          <div className="section-heading">
+            <p className="section-kicker">Manufacturing Capabilities</p>
+            <h2>Digitally controlled production with quality-focused execution</h2>
+          </div>
+          <div className="capability-layout">
+            <div className="content-card">
+              <p>
+                Jinma maintains a manufacturing model centered on AGM separator
+                specialization, production stability, and process refinement. The factory
+                supports industrial-scale output for domestic and international customers
+                while maintaining disciplined quality targets.
+              </p>
             </div>
-            <div className="rounded-xl border border-white/10 bg-white/[0.03] p-4">
-              <div className="text-xs text-white/60">Dimensions</div>
-              <div className="mt-1 text-base font-semibold">Customized to client requirements</div>
-            </div>
+            <ul className="capability-list">
+              {CAPABILITIES.map((item) => (
+                <li key={item}>{item}</li>
+              ))}
+            </ul>
           </div>
         </div>
       </section>
 
-      {/* Quality */}
-      <section id="quality" className="border-t border-white/10 bg-white/[0.02]">
-        <div className="mx-auto max-w-6xl px-5 py-16 md:py-20">
-          <SectionTitle
-            eyebrow="Quality"
-            title="Systematic control, certified standards"
-            desc="Built on internationally aligned management systems and disciplined process execution."
-          />
-
-          <div className="mt-10 grid gap-6 lg:grid-cols-3">
-            {CERTS.map((c) => (
-              <Card key={c.title} title={c.title} desc={c.desc} />
-            ))}
+      <section id="quality" className="content-section section-toned">
+        <div className="section-inner">
+          <div className="section-heading">
+            <p className="section-kicker">Quality & Certifications</p>
+            <h2>Management systems and qualification credentials supporting production reliability</h2>
           </div>
-
-          <div className="mt-10 grid gap-6 md:grid-cols-2">
-            <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-7 backdrop-blur">
-              <div className="text-lg font-semibold">Recognitions</div>
-              <ul className="mt-3 space-y-2 text-sm text-white/70">
-                {RECOGNITIONS.map((r) => (
-                  <li key={r.title} className="flex gap-2">
-                    <span className="mt-[7px] h-1.5 w-1.5 rounded-full bg-sky-300/80" />
+          <div className="certification-grid">
+            {CERTIFICATIONS.map((cert) => (
+              <article key={cert.title} className="cert-card">
+                <h3>{cert.title}</h3>
+                <dl>
+                  <div>
+                    <dt>Certificate No.</dt>
+                    <dd>{cert.number}</dd>
+                  </div>
+                  {cert.scope ? (
                     <div>
-                      <div className="font-semibold text-white">{r.title}</div>
-                      <div className="text-white/70">{r.desc}</div>
+                      <dt>Scope</dt>
+                      <dd>{cert.scope}</dd>
                     </div>
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-7 backdrop-blur">
-              <div className="text-lg font-semibold">Innovation focus</div>
-              <p className="mt-3 text-sm leading-relaxed text-white/70">
-                Continuous R&D investment supports process enhancement and product optimization, building
-                technical reserves for next-generation separator materials.
-              </p>
-              <div className="mt-4 flex flex-wrap gap-2">
-                {PATENT_AREAS.map((p) => (
-                  <span
-                    key={p}
-                    className="rounded-full border border-white/10 bg-white/[0.03] px-3 py-1 text-xs text-white/70"
-                  >
-                    {p}
-                  </span>
-                ))}
-              </div>
-            </div>
+                  ) : null}
+                  {cert.validUntil ? (
+                    <div>
+                      <dt>Valid Until</dt>
+                      <dd>{cert.validUntil}</dd>
+                    </div>
+                  ) : null}
+                </dl>
+              </article>
+            ))}
           </div>
         </div>
       </section>
 
-      {/* CTA */}
-      <section id="contact" className="mx-auto max-w-6xl px-5 py-16 md:py-20">
-        <div className="rounded-3xl border border-white/10 bg-gradient-to-b from-white/[0.06] to-white/[0.02] p-8 md:p-10 shadow-[0_0_0_1px_rgba(255,255,255,0.03)_inset]">
-          <div className="grid gap-8 md:grid-cols-2 md:items-center">
-            <div>
-              <div className="text-xs tracking-[0.24em] uppercase text-white/60">Contact</div>
-              <h3 className="mt-3 text-2xl md:text-3xl font-semibold">
-                Let’s build reliability into your next power system.
-              </h3>
-              <p className="mt-3 text-sm md:text-base text-white/70 leading-relaxed">
-                Share your specification (thickness, dimensions, application scenario). We will respond with
-                recommended material options and a production schedule.
-              </p>
+      <section id="awards" className="content-section awards-section">
+        <div className="section-inner">
+          <div className="section-heading section-heading-centered">
+            <p className="section-kicker">Awards & Recognitions</p>
+            <h2>Awards & Recognitions</h2>
+            <p>
+              International recognition, government honors, and customer awards reflecting
+              Jinma’s technical capabilities and manufacturing quality.
+            </p>
+          </div>
 
-              <div className="mt-6 space-y-2 text-sm text-white/70">
-                <div>
-                  <span className="text-white/60">Address: </span>
-                  {COMPANY.location}
+          <div className="awards-list">
+            {AWARDS.map((award) => (
+              <article key={award.title} className="award-card">
+                {award.image ? (
+                  <div className="award-image-wrap">
+                    <img
+                      src={award.image}
+                      alt={award.title}
+                      className="award-image"
+                      loading="lazy"
+                    />
+                  </div>
+                ) : null}
+                <div className="award-body">
+                  <h3>{award.title}</h3>
+                  <p>{award.body}</p>
+                  {award.extra ? <p>{award.extra}</p> : null}
                 </div>
-              </div>
-            </div>
-
-            {/* Simple contact form (front-end only) */}
-            <form className="rounded-2xl border border-white/10 bg-white/[0.03] p-6 backdrop-blur">
-              <div className="grid gap-4">
-                <input
-                  className="w-full rounded-xl border border-white/10 bg-slate-950/60 px-4 py-3 text-sm text-white placeholder:text-white/40 outline-none focus:border-white/25"
-                  placeholder="Name"
-                />
-                <input
-                  className="w-full rounded-xl border border-white/10 bg-slate-950/60 px-4 py-3 text-sm text-white placeholder:text-white/40 outline-none focus:border-white/25"
-                  placeholder="Email"
-                />
-                <input
-                  className="w-full rounded-xl border border-white/10 bg-slate-950/60 px-4 py-3 text-sm text-white placeholder:text-white/40 outline-none focus:border-white/25"
-                  placeholder="Company (optional)"
-                />
-                <textarea
-                  className="min-h-[120px] w-full rounded-xl border border-white/10 bg-slate-950/60 px-4 py-3 text-sm text-white placeholder:text-white/40 outline-none focus:border-white/25"
-                  placeholder="Tell us your application, thickness, dimensions, and required quantity."
-                />
-                <button
-                  type="button"
-                  className="rounded-2xl bg-white px-6 py-3 text-sm font-semibold text-slate-950 hover:bg-white/90"
-                >
-                  Send Inquiry
-                </button>
-                <div className="text-xs text-white/50">
-                  * This form is currently front-end only. When you’re ready, I can connect it to email or a
-                  backend endpoint.
-                </div>
-              </div>
-            </form>
+              </article>
+            ))}
           </div>
         </div>
-
-        <footer className="mt-10 border-t border-white/10 pt-8 text-xs text-white/55">
-          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
-            <div>© {new Date().getFullYear()} {COMPANY.name}. All rights reserved.</div>
-            <div className="text-white/55">Quality Above All · Service First</div>
-          </div>
-        </footer>
       </section>
-    </div>
+
+      <section id="patents" className="content-section section-toned">
+        <div className="section-inner">
+          <div className="section-heading">
+            <p className="section-kicker">Patents & Innovation</p>
+            <h2>Patents & Innovation</h2>
+            <p>
+              Jinma has developed multiple utility model patents related to AGM separator
+              manufacturing, testing, drying, cutting, acid absorption, acid separation,
+              and production equipment.
+            </p>
+          </div>
+          <div className="patent-panel">
+            <ul className="patent-list">
+              {PATENTS.map((item) => (
+                <li key={item}>{item}</li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section className="content-section">
+        <div className="section-inner">
+          <div className="section-heading">
+            <p className="section-kicker">Markets & Customers</p>
+            <h2>Domestic supply experience with growing international reach</h2>
+            <p>
+              Jinma serves domestic lead-acid battery manufacturers and exports to
+              international markets including Indonesia, Bangladesh, and Vietnam. The
+              company has supplied products to recognized battery manufacturers and
+              maintains a market reputation based on stable quality, technical support,
+              and cost-effective separator solutions.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <GallerySection
+        id="factory-gallery"
+        title="Factory Gallery"
+        subtitle="Advanced AGM separator production facilities and industrial manufacturing environment."
+        images={factoryImages}
+      />
+
+      <GallerySection
+        id="product-gallery"
+        title="Product Gallery"
+        subtitle="AGM separator materials and battery separator product solutions."
+        images={productImages}
+      />
+
+      <GallerySection
+        id="certification-gallery"
+        title="Certification Gallery"
+        subtitle="Quality systems, environmental management, and industry certifications."
+        images={certificateImages}
+      />
+
+      <GallerySection
+        id="patent-gallery"
+        title="Patent & Innovation Gallery"
+        subtitle="Utility model patents and AGM separator technology innovation."
+        images={patentImages}
+      />
+
+      <section id="contact" className="content-section contact-section">
+        <div className="section-inner contact-layout">
+          <div className="section-heading">
+            <p className="section-kicker">Contact</p>
+            <h2>Jiangxi Jinma Advanced Separator Technology Co., Ltd.</h2>
+          </div>
+          <div className="contact-grid">
+            <div className="contact-card">
+              <span>Address</span>
+              <strong>
+                No. 105 Huajian North Road, Ganzhou Economic and Technological
+                Development Zone, Jiangxi, China
+              </strong>
+            </div>
+            <div className="contact-card">
+              <span>Email</span>
+              <strong>
+                <a href="mailto:linliang1960@gmail.com">linliang1960@gmail.com</a>
+              </strong>
+            </div>
+            <div className="contact-card">
+              <span>Technical Director</span>
+              <strong>Lin Liang</strong>
+              <p>Advanced AGM Battery Technology</p>
+            </div>
+          </div>
+          <div className="image-rules">
+            <h3>Image Folder Rules</h3>
+            <ul>
+              <li>public/awards/ for awards images</li>
+              <li>public/factory/ for factory images</li>
+              <li>public/certificates/ for certification images</li>
+              <li>public/products/ for product images</li>
+              <li>public/patents/ for patent images</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+    </main>
   );
 }
